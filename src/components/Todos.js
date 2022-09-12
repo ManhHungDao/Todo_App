@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { connect } from "react-redux";
-import { addTodos, removeTodos, updateTodos } from "../redux/reducer";
+import Todoitem from "./Todoitem";
+import {
+  addTodos,
+  completeTodos,
+  removeTodos,
+  updateTodos,
+} from "../redux/reducer";
 
 const mapStateToProps = (state) => {
   return { todos: state };
@@ -11,6 +17,7 @@ const mapDispatchToProps = (dispatch) => {
     addTodo: (obj) => dispatch(addTodos(obj)),
     removeTodo: (id) => dispatch(removeTodos(id)),
     updateTodo: (obj) => dispatch(updateTodos(obj)),
+    completeTodo: (id) => dispatch(completeTodos(id)),
   };
 };
 
@@ -23,7 +30,7 @@ const Todos = (props) => {
     <div className="addTodos">
       <input
         type="text"
-        className="todo.input"
+        className="todo-input"
         onChange={(e) => {
           handleChange(e);
         }}
@@ -43,13 +50,12 @@ const Todos = (props) => {
       <br />
       <ul>
         {props.todos.map((item) => {
-          return (
-            <li key={item.id}>
-              <textarea> {item.item}</textarea>
-              <button onClick={() => props.updateTodo(item)}>Edit</button>
-              <button onClick={() => props.removeTodo(item.id)}>Delete</button>
-            </li>
-          );
+          <Todoitem
+            item={item}
+            removeTodo={props.removeTodos}
+            updateTodo={props.updateTodos}
+            completeTodo={props.updateTodos}
+          />;
         })}
       </ul>
     </div>
