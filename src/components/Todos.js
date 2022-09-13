@@ -1,13 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Todoitem from "./Todoitem";
-import {
-  addTodos,
-  completeTodos,
-  removeTodos,
-  updateTodos,
-} from "../redux/reducer";
-
+import { addTodos } from "../redux/reducer";
+import { GoPlus } from "react-icons/go";
+import { motion } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 const mapStateToProps = (state) => {
   return { todos: state };
 };
@@ -15,17 +12,27 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTodo: (obj) => dispatch(addTodos(obj)),
-    removeTodo: (id) => dispatch(removeTodos(id)),
-    updateTodo: (obj) => dispatch(updateTodos(obj)),
-    completeTodo: (id) => dispatch(completeTodos(id)),
   };
 };
 
 const Todos = (props) => {
   const [todo, setTodo] = useState("");
+
+  const add = () => {
+    if (!todo) {
+      return;
+    }
+    props.addTodo({
+      id: uuidv4(),
+      item: todo,
+      completed: false,
+    });
+    setTodo("");
+  };
   const handleChange = (e) => {
     setTodo(e.target.value);
   };
+
   return (
     <div className="addTodos">
       <input
@@ -34,19 +41,16 @@ const Todos = (props) => {
         onChange={(e) => {
           handleChange(e);
         }}
+        value={todo}
       />
-      <button
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         className="add-btn"
-        onClick={() =>
-          props.addTodo({
-            id: Math.floor(Math.random() * 1000),
-            item: todo,
-            completed: false,
-          })
-        }
+        onClick={() => add()}
       >
-        Add
-      </button>
+        <GoPlus />
+      </motion.button>
       <br />
       <ul>
         {props.todos.map((item) => {
